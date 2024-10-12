@@ -51,8 +51,11 @@ async def setup_bot_commands(): # TODO
 
 @dp.message_handler(commands=['start'])
 async def startpg(message: types.Message, state: FSMContext):
+    async with state.proxy() as data: # set random question key at start fsm
+        data['random_key'] = random.choice(list(questions.keys()))
+
     await bot.send_photo(message.chat.id,
-                         photo=questions["quriosity_meaning"]["image"])
+                         photo=questions[data['random_key']]["image"])
     await message.reply('Welcome to our bot! '
                         '\nYou will learn many interesting facts about space ', 
                         reply_markup=startmenu)
@@ -103,8 +106,10 @@ async def osnova(message: types.Message, state: FSMContext):
 
 @dp.message_handler(state=QuestionnaireState.step_3)
 async def exitpg(message: types.Message, state: FSMContext): 
+    async with state.proxy() as data:
+        random_key = data['random_key']
     logging.debug("%d ext start %d", bcolors.OKBLUE, bcolors.ENDC)
-    await message.reply(questions["quriosity_meaning"]["explanation"],
+    await message.reply(questions[random_key]["explanation"],
                         reply_markup=startmenu)
     await state.finish()
 
@@ -127,15 +132,21 @@ async def restart(message: types.Message, state: FSMContext):
 async def questionnaire_state_1_message(message: types.Message, state: FSMContext):
     async with state.proxy() as user_data:
         user_data['name'] = message.text.replace('\n', ' ')
+        random_key = user_data['random_key']
     # await message.reply(f"Ваше имя: {user_data['name']}")
 
-    if set(user_data['name'].split()) <= set("Water water find Find".split()):
-        await message.reply("That's the right answer, " +
-                            questions["quriosity_meaning"]["explanation"]
+    unique_key_words = set()
+    for word in questions[random_key]["explanation"].lower().split():
+        if word.isalpha() and len(word) >= 4:
+            unique_key_words.add(word)
+
+    if set(user_data['name'].lower().split()) <= unique_key_words:
+        await message.reply("That's the right answer, " + 
+                            questions[random_key]["explanation"]
                             , reply_markup=startmenu)
         await state.finish()  # Оканчиваем наш FSM опрос от пользывателя
     elif message.text.replace('\n', ' ') == "Exit": 
-        await message.reply(questions["quriosity_meaning"]["explanation"]
+        await message.reply(questions[random_key]["explanation"]
                             , reply_markup=startmenu)
         await state.finish()  # Оканчиваем наш FSM опрос от пользывателя
     else:
