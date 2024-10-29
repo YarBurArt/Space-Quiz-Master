@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "space-quiz-master"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+packages = [{include = "space_quiz_master"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+aiogram = "^3.13.1"
+aiohttp = "^3.10.10"
+pymongo = "^4.10.1"
+
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^1.13.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -151,4 +151,7 @@ dmypy.json
 /config/
 
 config.py
-cfg.py
+cfg.py 
+# poetry 
+#poetry.lock
+
