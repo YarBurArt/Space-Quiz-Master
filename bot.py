@@ -24,8 +24,8 @@ memory_storage = MemoryStorage()
      
 async def main() -> None:
     bot = Bot(TOKEN)
-    dp = Dispatcher(bot, storage=memory_storage)
-    db.include_routes(base_r)
+    dp = Dispatcher(storage=memory_storage)
+    dp.include_router(base_r)
     await dp.start_polling(bot)
 
 if __name__ == '__main__':
