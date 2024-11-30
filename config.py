@@ -3,11 +3,12 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-TOKEN = os.getenv("TOKEN")
+# real or null token from core.telegram.org
+TOKEN: str = os.getenv("TOKEN") or "110201543:AAHdqTcvCH1vGWJxfSeofSAs0K5PALDsaw"
 API_KEY_NASA = "DEMO_KEY" # it's a piece of goodness, there's no point in hiding it in the env.
 DB_URL = "mongodb://localhost:27017"
 
-questions = {
+questions: dict = {
     "quriosity_meaning": {
         "image": "https://fsmedia.imgix.net/af/04/5e/78/1e19/4018/a6b9"
                  "/4bd2a4f25d09/the-mars-opportunity-rover-in-this-"
@@ -82,9 +83,9 @@ questions = {
     }
 }
 
-help_img_url = 'https://media1.tenor.com/m/ozes7rBHiXcAAAAC/space-space-cat.gif'
+help_img_url: str = 'https://media1.tenor.com/m/ozes7rBHiXcAAAAC/space-space-cat.gif'
 
-HELPME = """
+HELPME: str = """
 */help* \- get all commands 
 */start* \- start message 
 */next* \- get random fact about space

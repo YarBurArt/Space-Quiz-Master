@@ -1,10 +1,11 @@
 import random
+import logging
 from aiogram import Router, types, F, Bot
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from rnd_img import get_img_with_descr
 from handlers_helper import *
-from config import questions, help_img_url
+from config import questions, help_img_url, HELPME, bcolors
 
 base_r = Router(name=__name__)
 
@@ -24,14 +25,14 @@ async def startpg(message: types.Message, state: FSMContext):
 async def cancelpg(message: types.Message, state: FSMContext):
     if state is None:
         return
-    await state.finish()
+    await state.clear()
     await message.reply('Exit from quiz',
                         reply_markup=startmenu)
 
 
 @base_r.message(Command('help'))
 async def helppg(message: types.Message):
-    await Bot.send_video(message.chat.id, help_img_url, None, '...')
+    await message.answer_animation(animation=help_img_url, caption="...")
     await message.answer(text=HELPME, parse_mode="MarkdownV2")
 
 
@@ -63,18 +64,19 @@ async def osnova(message: types.Message, state: FSMContext):
 
 @base_r.message(QuestionnaireState.step_3_exit)
 async def exitpg(message: types.Message, state: FSMContext): 
-    random_key = await state.get_data()['random_key']
+    state_data: dict = await state.get_data()
+    random_key: str = state_data['random_key']
     logging.debug("%d ext start %d", bcolors.OKBLUE, bcolors.ENDC)
     await message.reply(questions[random_key]["explanation"],
                         reply_markup=startmenu)
-    await state.finish()
+    await state.clear()
 
 
 @base_r.message(QuestionnaireState.step_2_try)
 async def restart(message: types.Message, state: FSMContext):
     if message.text == "Exit":
         logging.debug(f"{bcolors.OKBLUE}ext restart{bcolors.ENDC}")
-        await state.set_state(QuestionnaireState.step_3)
+        await state.set_state(QuestionnaireState.step_3_exit)
         await exitpg(message, state)
     else:
         await message.reply("Try it again",
@@ -85,7 +87,7 @@ async def restart(message: types.Message, state: FSMContext):
 @base_r.message(QuestionnaireState.step_1_start)
 async def questionnaire_state_1_message(message: types.Message, state: FSMContext):
     """ check answer and show explanation, then restart """
-    await state.update_data({"name": message.text.replace('\n', ' ')})
+    await state.update_data({"name": (message.text or "nasa").replace('\n', ' ')})
     data = await state.get_data()
     random_key = data['random_key'] # key that already get from db/config 
 
@@ -99,11 +101,11 @@ async def questionnaire_state_1_message(message: types.Message, state: FSMContex
         await message.reply("That's the right answer, " + 
                             questions[random_key]["explanation"]
                             , reply_markup=startmenu)
-        await state.finish()  # Оканчиваем наш FSM опрос от пользывателя
-    elif message.text.replace('\n', ' ') == "Exit": 
+        await state.clear()  # Оканчиваем наш FSM опрос от пользывателя
+    elif (message.text or "Exit").replace('\n', ' ') == "Exit": 
         await message.reply(questions[random_key]["explanation"]
                             , reply_markup=startmenu)
-        await state.finish()  # Оканчиваем наш FSM опрос от пользывателя
+        await state.clear()  # Оканчиваем наш FSM опрос от пользывателя
     else:
         await message.reply("wrong answer", reply_markup=votemenu)
         await state.set_state(QuestionnaireState.step_2_try)
