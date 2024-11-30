@@ -37,6 +37,7 @@ async def helppg(message: types.Message):
 
 @base_r.message(Command('rndimg'))
 async def rndimg(message: types.Message):
+    """ get random image via NASA API """
     msg = await message.answer("Search  . . . ")
     resj = await get_img_with_descr()
     await message.reply_photo(photo=resj['url'], 
@@ -83,16 +84,18 @@ async def restart(message: types.Message, state: FSMContext):
 
 @base_r.message(QuestionnaireState.step_1_start)
 async def questionnaire_state_1_message(message: types.Message, state: FSMContext):
+    """ check answer and show explanation, then restart """
     await state.update_data({"name": message.text.replace('\n', ' ')})
     data = await state.get_data()
-    random_key = data['random_key']
+    random_key = data['random_key'] # key that already get from db/config 
 
-    unique_key_words = set()
-    for word in questions[random_key]["explanation"].lower().split():
-        if word.isalpha() and len(word) >= 4:
-            unique_key_words.add(word)
+    # collect key words from config, without meaningless 
+    unique_key_words = set(
+        word for word in questions[random_key]["explanation"].lower().split()
+        if len(word) >= 4)
 
-    if set(data['name'].lower().split()) <= unique_key_words:
+    # well, it works for 2 sentences about the same mission
+    if set(data['name'].lower().split()) <= unique_key_words: 
         await message.reply("That's the right answer, " + 
                             questions[random_key]["explanation"]
                             , reply_markup=startmenu)

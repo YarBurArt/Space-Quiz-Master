@@ -11,8 +11,8 @@ async def connect_to_db() -> motor.motor_asyncio.AsyncIOMotorCollection:
     return database["Questions"]
 
 
-async def get_some(collection: motor.motor_asyncio.AsyncIOMotorCollection,
-                   samples: int = 1):
+async def get_some(
+    collection: motor.motor_asyncio.AsyncIOMotorCollection, samples: int = 1):
     async for doc in collection.aggregate([
             {'$sample':
                 {'size': samples}}
@@ -20,8 +20,8 @@ async def get_some(collection: motor.motor_asyncio.AsyncIOMotorCollection,
         return doc  # TODO:
 
 
-async def fill_db(collection: motor.motor_asyncio.AsyncIOMotorCollection,
-                  items: int = 5):
+async def fill_db(
+    collection: motor.motor_asyncio.AsyncIOMotorCollection, items: int = 5):
     for _ in range(items):
         doc = await get_img_with_descr()
         doc['rnd'] = random.random()

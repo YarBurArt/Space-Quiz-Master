@@ -4,9 +4,10 @@ Module for async retrieving a random image with description from the other API.
 import json
 import asyncio
 import aiohttp 
+from config import API_KEY_NASA
 
 
-URL = 'https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&count=1'
+URL = f'https://api.nasa.gov/planetary/apod?api_key={API_KEY_NASA}&count=1'
 
 
 async def get_img_with_descr():

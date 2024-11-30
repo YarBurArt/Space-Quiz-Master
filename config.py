@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 TOKEN = os.getenv("TOKEN")
+API_KEY_NASA = "DEMO_KEY" # it's a piece of goodness, there's no point in hiding it in the env.
 DB_URL = "mongodb://localhost:27017"
 
 questions = {
