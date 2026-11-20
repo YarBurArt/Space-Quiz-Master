@@ -1,11 +1,23 @@
-from aiogram import types
+from aiogram import Bot, types
 from aiogram.fsm.state import State, StatesGroup
 
 markup1 = types.KeyboardButton(text="Random fact")
-startmenu = types.ReplyKeyboardMarkup(keyboard=[[markup1,],],resize_keyboard=True)
+startmenu = types.ReplyKeyboardMarkup(
+    keyboard=[
+        [
+            markup1,
+        ],
+    ],
+    resize_keyboard=True,
+)
 
 markup2 = types.KeyboardButton(text="Exit")
-votemenu = types.ReplyKeyboardMarkup(keyboard=[[markup2],],resize_keyboard=True)
+votemenu = types.ReplyKeyboardMarkup(
+    keyboard=[
+        [markup2],
+    ],
+    resize_keyboard=True,
+)
 
 
 class QuestionnaireState(StatesGroup):
@@ -14,10 +26,10 @@ class QuestionnaireState(StatesGroup):
     step_3_exit = State()  # exit
 
 
-async def setup_bot_commands(): # TODO
+async def setup_bot_commands(bot: Bot):  # TODO
     bot_commands = [
         types.BotCommand(command="/help", description="Get info about me"),
         types.BotCommand(command="/start", description="start message"),
-        types.BotCommand(command="/cancel", description="cancel quiz")
+        types.BotCommand(command="/cancel", description="cancel quiz"),
     ]
     await bot.set_my_commands(bot_commands)

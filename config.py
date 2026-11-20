@@ -85,7 +85,7 @@ questions: dict = {
 
 help_img_url: str = 'https://media1.tenor.com/m/ozes7rBHiXcAAAAC/space-space-cat.gif'
 
-HELPME: str = """
+HELPME: str = r"""
 */help* \- get all commands 
 */start* \- start message 
 */next* \- get random fact about space

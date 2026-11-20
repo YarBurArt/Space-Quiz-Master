@@ -2,7 +2,16 @@
 ![sdf](https://images.unsplash.com/photo-1610296669228-602fa827fc1f?q=80&w=1975&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)
 
 ## Welcome to the SpaceBot README!
-Dive into the cosmos with SpaceBot, powered by cutting-edge tech (MongoDB, aiogram 2.8, asyncio, aiohttp).
+Dive into the cosmos with SpaceBot, powered by cutting-edge tech (MongoDB, aiogram 3, asyncio, aiohttp).
+
+### Setup
+
+Requires Python 3.15 and [uv](https://docs.astral.sh/uv/). Set `TOKEN` in a `.env` file to use your own bot.
+
+```sh
+uv sync
+uv run python bot.py
+```
 
 ### Available Commands:
 

@@ -1,30 +1,33 @@
-import random
-import motor.motor_asyncio
 import asyncio
-from rnd_img import get_img_with_descr
+import random
+
+import motor.motor_asyncio
+
 from config import DB_URL
+from rnd_img import get_img_with_descr
 
 
 async def connect_to_db() -> motor.motor_asyncio.AsyncIOMotorCollection:
-    client = motor.motor_asyncio.AsyncIOMotorClient(DB_URL)
+    client: motor.motor_asyncio.AsyncIOMotorClient = (
+        motor.motor_asyncio.AsyncIOMotorClient(DB_URL)
+    )
     database = client["datamini"]
     return database["Questions"]
 
 
 async def get_some(
-    collection: motor.motor_asyncio.AsyncIOMotorCollection, samples: int = 1):
-    async for doc in collection.aggregate([
-            {'$sample':
-                {'size': samples}}
-            ]):
+    collection: motor.motor_asyncio.AsyncIOMotorCollection, samples: int = 1
+):
+    async for doc in collection.aggregate([{"$sample": {"size": samples}}]):
         return doc  # TODO:
 
 
 async def fill_db(
-    collection: motor.motor_asyncio.AsyncIOMotorCollection, items: int = 5):
+    collection: motor.motor_asyncio.AsyncIOMotorCollection, items: int = 5
+):
     for _ in range(items):
         doc = await get_img_with_descr()
-        doc['rnd'] = random.random()
+        doc["rnd"] = random.random()
         await collection.insert_one(doc)
 
 
